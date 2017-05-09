@@ -5,6 +5,7 @@ import djikstra.filehandler.FileExtractor;
 import djikstra.filehandler.GraphRawData;
 import djikstra.graph.GraphManager;
 import io.reactivex.Observable;
+import org.apache.log4j.BasicConfigurator;
 
 import java.io.FileNotFoundException;
 
@@ -13,6 +14,7 @@ public class Main {
     GraphManager graphManager;
 
     public static void main(String[] args) throws FileNotFoundException {
+        BasicConfigurator.configure();
         Main main = new Main();
 //        long startTime = System.nanoTime();
         FileExtractor fileExtractor = new FileExtractor("computerphile.txt");
