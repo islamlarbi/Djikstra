@@ -5,6 +5,9 @@ import io.reactivex.Observable;
 import java.util.ArrayList;
 import java.util.List;
 
+/*
+    This class stores all the nodes in a graph
+ */
 public class GraphManager {
     private List<Node> nodes;
     private int nodeSize;
@@ -18,11 +21,17 @@ public class GraphManager {
         return nodes;
     }
 
+    /*
+        This method generates all the nodes from 1 to x
+     */
     public void generateNodes() {
         Observable.range(1, nodeSize)
                 .blockingSubscribe(index -> nodes.add(new Node(index)));
     }
 
+    /*
+        This method adds an edge connecting two nodes.
+     */
     public void addEdge(int firstNodeValue, int secondNodeValue, float weight) {
         Edge edge = new Edge(weight);
 
@@ -31,6 +40,7 @@ public class GraphManager {
         Node firstNode = nodes.get(firstNodeValue - 1);
         Node secondNode = nodes.get(secondNodeValue - 1);
 
+        /*I for sure check if the node has the same value as its index*/
         if (firstNode.getValue() != firstNodeValue) {
             throw new GraphException("First node value: " + firstNode.getValue() + " is not equal param value: " + firstNodeValue);
         }

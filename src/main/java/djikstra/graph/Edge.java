@@ -34,4 +34,11 @@ public class Edge {
             throw new IllegalArgumentException(node.toString() + " is neither firstNode or secondNode");
         }
     }
+
+    @Override
+    public String toString() {
+        return "Edge{" +
+                "weight=" + weight +
+                '}' + " connects: " + firstNode.getValue() + " and " + secondNode.getValue();
+    }
 }

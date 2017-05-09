@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Node {
     private int value;
-    private List<Edge> edges = new ArrayList();
+    private List<Edge> edges = new ArrayList<>();
 
     public Node(int value) {
         this.value = value;
@@ -21,5 +21,12 @@ public class Node {
 
     public int getValue() {
         return value;
+    }
+
+    @Override
+    public String toString() {
+        return "Node{" +
+                "value=" + value +
+                '}';
     }
 }

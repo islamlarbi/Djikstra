@@ -1,5 +1,8 @@
 package djikstra.filehandler;
 
+/*
+    This class stores raw data from the text file
+ */
 public class GraphRawData {
     private int numberOfNodes;
     private int numberOfEdges;
