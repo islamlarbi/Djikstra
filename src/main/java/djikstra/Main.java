@@ -52,7 +52,6 @@ public class Main {
                 .flatMap(ints -> Observable.just(ints)
                         .subscribeOn(Schedulers.computation())
                         .doOnNext(queries -> {
-//                            Thread.sleep(1000);
                             Algorithm algorithm = new Algorithm(
                                     main.graphRawData.getNumberOfNodes(),
                                     main.graphManager.getNodes().get(queries[0] - 1),
