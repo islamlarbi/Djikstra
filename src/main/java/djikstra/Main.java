@@ -1,29 +1,40 @@
 package djikstra;
 
 import djikstra.core.Algorithm;
+import djikstra.core.AlgorithmSuccess;
 import djikstra.filehandler.FileExtractor;
 import djikstra.filehandler.GraphRawData;
 import djikstra.graph.GraphManager;
 import io.reactivex.Observable;
+import io.reactivex.Scheduler;
+import io.reactivex.schedulers.Schedulers;
 import org.apache.log4j.BasicConfigurator;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileNotFoundException;
+import java.util.Collections;
 
 public class Main {
+    private static Logger logger = LoggerFactory.getLogger(Main.class);
+
     GraphRawData graphRawData;
     GraphManager graphManager;
 
     public static void main(String[] args) throws FileNotFoundException {
-        BasicConfigurator.configure();
+        long startTime = System.nanoTime();
+
         Main main = new Main();
-//        long startTime = System.nanoTime();
-        FileExtractor fileExtractor = new FileExtractor("computerphile.txt");
+
+        /*Reading from file*/
+        FileExtractor fileExtractor = new FileExtractor("big.txt");
         main.graphRawData = fileExtractor.readFile();
 
-//        long startTimeMid = System.nanoTime();
+        long startTimeMid = System.nanoTime();
 
-//        System.out.println("Execution time (read file): " + (startTimeMid - startTime) / 1000000 + "ms");
+        System.out.println("Execution time (read file): " + (startTimeMid - startTime) / 1000000 + "ms");
 
+        /*Generating a graph by creating nodes and edges objects*/
         main.graphManager = new GraphManager(main.graphRawData.getNumberOfNodes());
         main.graphManager.generateNodes();
 
@@ -32,20 +43,35 @@ public class Main {
                     main.graphManager.addEdge((int) edges[0], (int) edges[1], edges[2]);
                 });
 
+
+        /*__________________HERE IS THE MAGIC________________*/
         Observable.fromArray(main.graphRawData.getQueries())
-                .blockingSubscribe(queries -> {
-                    Algorithm algorithm = new Algorithm(
-                            main.graphRawData.getNumberOfNodes(),
-                            main.graphManager.getNodes().get(queries[0] -1),
-                            main.graphManager.getNodes().get(queries[1] -1));
+                /*queries is an array of 2 elements
+                * First one is starting node
+                * Second one is the node that we need to find a path to*/
+                .flatMap(ints -> Observable.just(ints)
+                        .subscribeOn(Schedulers.computation())
+                        .doOnNext(queries -> {
+//                            Thread.sleep(1000);
+                            Algorithm algorithm = new Algorithm(
+                                    main.graphRawData.getNumberOfNodes(),
+                                    main.graphManager.getNodes().get(queries[0] - 1),
+                                    main.graphManager.getNodes().get(queries[1] - 1));
 
-                    algorithm.calculateShortestPath();
-                });
+                            AlgorithmSuccess algorithmSuccess = algorithm.calculateShortestPath();
+                            Collections.reverse(algorithmSuccess.backtracePath);
+                            logger.info("From {} to {} found the shortest distance {} with path {}",
+                                    algorithmSuccess.fromNode.getValue(),
+                                    algorithmSuccess.toNode.getValue(),
+                                    algorithmSuccess.distance,
+                                    algorithmSuccess.backtracePath);
+                        }))
+                .blockingSubscribe();
 
-//        long endTime = System.nanoTime();
+        long endTime = System.nanoTime();
 
-//        System.out.println("Execution time (instantiation): " + (endTime - startTimeMid) / 1000000 + "ms");
-//        System.out.println("Execution time (total): " + (endTime - startTime) / 1000000 + "ms");
+        System.out.println("Execution time (computation): " + (endTime - startTimeMid) / 1000000 + "ms");
+        System.out.println("Execution time (total): " + (endTime - startTime) / 1000000 + "ms");
 
     }
 }

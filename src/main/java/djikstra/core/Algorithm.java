@@ -5,7 +5,6 @@ import djikstra.graph.Node;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.PriorityQueue;
@@ -46,7 +45,7 @@ public class Algorithm {
         return nodeWrapper;
     }
 
-    public List<NodeWrapper> calculateShortestPath() {
+    public AlgorithmSuccess calculateShortestPath() {
         if (alreadyCalculated) {
             throw new AlgorithmException("The shortest path was already calculated");
         }
@@ -58,16 +57,26 @@ public class Algorithm {
 
         NodeWrapper finalNode = this.startAlgorithm();
         if (finalNode != null) {
+            List<Integer> backtracePath = backtraceNodePath(finalNode);
             logger.debug("__________________");
             logger.debug("SUCCESS!!!");
             logger.debug("{}", finalNode);
-            logger.debug("{}", backtraceNodePath(finalNode));
+            logger.debug("{}", backtracePath);
+
+            AlgorithmSuccess result = new AlgorithmSuccess();
+            result.foundWrapperNode = finalNode;
+            result.fromNode = startNode;
+            result.toNode = endNode;
+            result.backtracePath = backtracePath;
+            result.distance = finalNode.getDistance();
+
+            return result;
+
         } else {
             logger.debug("__________________");
             logger.debug("FAILED!!!");
+            throw new AlgorithmException("Couldnt fint a result!");
         }
-
-        return new ArrayList<>();
     }
 
     private NodeWrapper startAlgorithm() {
@@ -98,7 +107,7 @@ public class Algorithm {
 
             /*Here i check if the connecting node is the node that was previously analyzed
             * If yes I skip calculating this node*/
-            if (alreadyBeenToNodes[otherNode.getValue() -1] != null) {
+            if (alreadyBeenToNodes[otherNode.getValue() - 1] != null) {
                 logger.debug("Already been to this node. Skipping...");
                 continue;
             }
