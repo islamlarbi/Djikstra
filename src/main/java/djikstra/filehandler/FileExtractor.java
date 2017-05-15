@@ -47,25 +47,26 @@ public class FileExtractor {
 
             currentLine = scanner.nextLine();
 
-            Observable.range(0, graphRawData.getNumberOfEdges())
-                    .doOnNext(index -> {
-                        extractEdge(index);
-                    })
-                    .doOnNext(index -> {
-                        currentLine = scanner.nextLine();
-                    })
-                    .blockingSubscribe();
+            /*
+                Getting every line with edge data from file
+             */
+            for (int index = 0; index < graphRawData.getNumberOfEdges(); index++) {
+                extractEdge(index);
+                currentLine = scanner.nextLine();
+            }
 
-            Observable.range(0, graphRawData.getQueryNumber())
-                    .doOnNext(index -> {
-                        extractQuery(index);
-                    })
-                    .filter(index -> index < graphRawData.getQueryNumber()-1)
-                    .doOnNext(index -> {
-                        currentLine = scanner.nextLine();
-                    })
-                    .blockingSubscribe();
+            /*
+                Getting every line with query data from file
+             */
+            for (int index = 0; index < graphRawData.getQueryNumber(); index++) {
+                extractQuery(index);
 
+                if (index >= graphRawData.getQueryNumber() - 1) {
+                    continue;
+                }
+
+                currentLine = scanner.nextLine();
+            }
 
             return graphRawData;
         }

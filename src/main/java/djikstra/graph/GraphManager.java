@@ -25,8 +25,9 @@ public class GraphManager {
         This method generates all the nodes from 1 to x
      */
     public void generateNodes() {
-        Observable.range(1, nodeSize)
-                .blockingSubscribe(index -> nodes.add(new Node(index)));
+        for (int index = 1; index <= nodeSize; index++) {
+            nodes.add(new Node(index));
+        }
     }
 
     /*

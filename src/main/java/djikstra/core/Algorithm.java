@@ -83,7 +83,6 @@ public class Algorithm {
         NodeWrapper focusNode = null;
 
         while (!priorityQueue.isEmpty()) {
-//        for (int i = 0; i < 10; i++) {
             focusNode = priorityQueue.poll();
 
             NodeWrapper foundEndNode = calculateNodesFrom(focusNode);
