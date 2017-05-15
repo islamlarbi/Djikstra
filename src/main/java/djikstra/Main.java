@@ -22,7 +22,7 @@ public class Main {
     GraphRawData graphRawData;
     GraphManager graphManager;
 
-    public static void main(String[] args) throws FileNotFoundException {
+    public static void main(String[] args) throws FileNotFoundException, InterruptedException {
         long startTime = System.nanoTime();
 
         Main main = new Main();
@@ -72,12 +72,11 @@ public class Main {
                         algorithmSuccess.backtracePath);
             });
         }
+        /*I tell the thread pool to stop collecting any new requests for executions*/
         executor.shutdown();
-        try {
-            executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.MILLISECONDS);
-        } catch (InterruptedException e) {
-            logger.error("Error while handling multiple threads execution: {}", e.getMessage());
-        }
+
+        /*I'm waiting for all the algorithms to finish*/
+        executor.awaitTermination(Integer.MAX_VALUE, TimeUnit.MILLISECONDS);
 
         long endTime = System.nanoTime();
 
