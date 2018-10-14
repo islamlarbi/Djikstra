@@ -62,7 +62,7 @@ public class Main {
                         main.graphRawData.getNumberOfNodes(),
                         main.graphManager.getNodes().get(queries[0] - 1),
                         main.graphManager.getNodes().get(queries[1] - 1));
-
+                 /*algorithm */
                 AlgorithmSuccess algorithmSuccess = algorithm.calculateShortestPath();
                 Collections.reverse(algorithmSuccess.backtracePath);
                 logger.info("From {} to {} found the shortest distance {} with path {}",
